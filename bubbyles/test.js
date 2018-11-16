@@ -11,26 +11,24 @@ function clear() {
 		a.remove()
 	})
 }
-function run() {
-	clear();
-	context = createCanvas();
-	var levels =parseFloat(document.getElementById('number').value);
-	squareTile(context, levels, true);
-	context = createCanvas();
-	squareTile(context, levels, false);
-	context = createCanvas();
-	rectTile(context, levels, 50);
-	console.log("uh")
-	context = createCanvas();
-	arcTile(context, levels/2);
-	context = createCanvas();
-	if (levels < 5){
-		joyD(context, 5/4);
-	}
-	else {
-		joyD(context, levels/4);
+async function run() {
+	arcContext = createCanvas();
+	sqContext = createCanvas();
+	lContext = createCanvas();
+	while(true){
+		squareTile(sqContext, 10, true);
+		squareTile(lContext, 10, false);
+		arcTile(arcContext, 10);
+		await sleep(130);
+		fillTransparent(arcContext, 1);	
+		fillTransparent(sqContext, 1);
+		fillTransparent(lContext, 1);
 	}
 }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 function createCanvas() {
 	var canvas = document.createElement('canvas');
@@ -39,13 +37,18 @@ function createCanvas() {
 	var body = document.getElementsByTagName("body")[0];
 	body.appendChild(canvas);
 	var context = canvas.getContext('2d');
-	fillCanvas(context, "white");
+	fillCanvas(context);
 	return context;
 }
 
 function fillCanvas(context, color) {
 	context.rect(0, 0, context.canvas.height, context.canvas.height);
 	context.fillStyle = color;
+	context.fill();
+}
+function fillTransparent(context, val) {
+	context.rect(0, 0, context.canvas.height, context.canvas.height);
+	context.fillStyle = 'rgba(255, 255, 255,' + val + ')';
 	context.fill();
 }
 
@@ -186,7 +189,7 @@ function joyD(context, step) {
 		}
 		lines.push(line);
 	}
-	for (var i = 0; i < lines.length; i++) {	
+	for (var i = 20 ; i < lines.length; i++) {	
 		context.beginPath();
 		context.moveTo(lines[i][0].x, lines[i][0].y);
 		for (var j = 0; j < lines[i].length; j++) {
